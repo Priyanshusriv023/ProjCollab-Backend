@@ -119,7 +119,7 @@ userSchema.methods.generateRefreshToken = function(){
 
 userSchema.methods.generateTemporaryToken = function(){
            const unHashedToken = crypto.randomBytes(20).toString("hex")
-   //crypto returns hex value so we have to convert to string as we did above
+   //crypto returns hex value so we have to convert to string by using tostring("hex")
 
           const hashedToken = crypto.createHash("sha256")
                               .update(unHashedToken)

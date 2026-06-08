@@ -1,5 +1,5 @@
 import { apiResponse } from "../utils/api-Response.js";
-import {asynchandler} from "../utils/asynchandler.js";
+import {asynchandler} from "../utils/asyncHandler.js";
 
 /*const healthCheck =  (req, res) => {
     try {

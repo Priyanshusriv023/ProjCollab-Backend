@@ -8,7 +8,7 @@
 **Version:** 1.0.0  
 **Product Type:** Backend API for Project Management System
 
-Project Camp Backend is a RESTful API service designed to support collaborative project management. The system enables teams to organize projects, manage tasks with subtasks, maintain project notes, and handle user authentication with role-based access control.
+Project Camp Backend is a RESTful API service designed to support collaborative project management. The system enables teams to organize projects, manage tasks, and handle user authentication with role-based access control.
 
 ### 2. Target Users
 
@@ -53,22 +53,7 @@ Project Camp Backend is a RESTful API service designed to support collaborative 
 - **Task Assignment:** Assign tasks to specific team members
 - **Status Tracking:** Three-state status system (Todo, In Progress, Done)
 
-#### 3.5 Subtask Management
-
-- **Subtask Creation:** Add subtasks to existing tasks
-- **Subtask Updates:** Modify subtask details and completion status
-- **Subtask Deletion:** Remove subtasks (Admin/Project Admin only)
-- **Member Completion:** Allow members to mark subtasks as complete
-
-#### 3.6 Project Notes
-
-- **Note Creation:** Add notes to projects (Admin only)
-- **Note Listing:** View all project notes
-- **Note Details:** Access individual note content
-- **Note Updates:** Modify existing notes (Admin only)
-- **Note Deletion:** Remove notes (Admin only)
-
-#### 3.7 System Health
+#### 3.5 System Health
 
 - **Health Check:** API endpoint for system status monitoring
 
@@ -108,17 +93,7 @@ Project Camp Backend is a RESTful API service designed to support collaborative 
 - `GET /:projectId/t/:taskId` - Get task details (secured, role-based)
 - `PUT /:projectId/t/:taskId` - Update task (secured, Admin/Project Admin)
 - `DELETE /:projectId/t/:taskId` - Delete task (secured, Admin/Project Admin)
-- `POST /:projectId/t/:taskId/subtasks` - Create subtask (secured, Admin/Project Admin)
-- `PUT /:projectId/st/:subTaskId` - Update subtask (secured, role-based)
-- `DELETE /:projectId/st/:subTaskId` - Delete subtask (secured, Admin/Project Admin)
 
-**Note Routes** (`/api/v1/notes/`)
-
-- `GET /:projectId` - List project notes (secured, role-based)
-- `POST /:projectId` - Create note (secured, Admin only)
-- `GET /:projectId/n/:noteId` - Get note details (secured, role-based)
-- `PUT /:projectId/n/:noteId` - Update note (secured, Admin only)
-- `DELETE /:projectId/n/:noteId` - Delete note (secured, Admin only)
 
 **Health Check** (`/api/v1/healthcheck/`)
 
@@ -133,10 +108,6 @@ Project Camp Backend is a RESTful API service designed to support collaborative 
 | Manage Project Members     | ✓     | ✗             | ✗      |
 | Create/Update/Delete Tasks | ✓     | ✓             | ✗      |
 | View Tasks                 | ✓     | ✓             | ✓      |
-| Update Subtask Status      | ✓     | ✓             | ✓      |
-| Create/Delete Subtasks     | ✓     | ✓             | ✗      |
-| Create/Update/Delete Notes | ✓     | ✗             | ✗      |
-| View Notes                 | ✓     | ✓             | ✓      |
 
 #### 4.3 Data Models
 
@@ -173,7 +144,7 @@ Project Camp Backend is a RESTful API service designed to support collaborative 
 
 - Secure user authentication and authorization system
 - Complete project lifecycle management
-- Hierarchical task and subtask organization
+- Hierarchical task organization
 - Role-based access control implementation
 - File attachment capability for enhanced collaboration
 - Email notification system for user verification and password reset

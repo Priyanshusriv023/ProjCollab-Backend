@@ -1,9 +1,10 @@
 import {User} from '../models/user.models.js';
 import { apiResponse } from "../utils/api-Response.js";
 import {apiError} from "../utils/api-Error.js";
-import {asynchandler} from "../utils/asynchandler.js";
+import {asynchandler} from "../utils/asyncHandler.js";
 import {emailVerificationMailgenContent,forgotPasswordMailgenContent,sendEmail} from "../utils/mail.js";
-import jwt from "jsonwebtoken"
+import crypto from "crypto";
+import jwt from "jsonwebtoken";
 
 const generateAccessandRefreshToken = async (userId)=>{
 
@@ -35,7 +36,7 @@ const registerUser = asynchandler(async (req,res)=>{
                         
                         {email}  // Condition 2: Does the database 'email' match the incoming variable?
                         
-                 ] //$or take a array of object here 
+                 ] // $or take a array of object here 
                    // two object are {username:username} and {email:email}
          })
 
@@ -65,13 +66,13 @@ const registerUser = asynchandler(async (req,res)=>{
          subject: "please verify your email",
          mailgenContent: emailVerificationMailgenContent(
                 user.username,
-                `${req.protocol}://${req.get("host")}/api/v1/users/verify-email/${unHashedToken}`,
-         )
-})
+                `${req.protocol}://${req.get("host")}/api/v1/auth/verify-email/${unHashedToken}`,
+         ),
+       });
 
        const createdUser = await User.findById(user._id).select(
-  "-password -refreshToken -emailVerificationToken -emailVerificationExpiry",
-);
+         "-password -refreshToken -emailVerificationToken -emailVerificationExpiry",
+       );
 
     if(!createdUser){
          throw new apiError(404,"something went wrong")
@@ -134,11 +135,8 @@ const loginUser = asynchandler(async (req,res)=> {
                 refreshToken
                  
                },
-                "User Loggedin Successfully"
-            )
-         )
-
-
+                "User logged in successfully")
+              )
 
 })
 
@@ -249,16 +247,16 @@ const resendEmailVerification = asynchandler(async (req,res) => {
          subject: "please verify your email",
          mailgenContent: emailVerificationMailgenContent(
                 user.username,
-                `${req.protocol}://${req.get("host")}/api/v1/users/verify-email/${unHashedToken}`,
-         )
-})
+                `${req.protocol}://${req.get("host")}/api/v1/auth/verify-email/${unHashedToken}`,
+         ),
+       });
 
   res.status(200)
       .json(new apiResponse(
             200,
             {},
             "Mail has been sent to your Email Id"
-      ))
+      ));
         
         
 })
@@ -289,7 +287,7 @@ const refreshAccessToken = asynchandler(async (req,res)=> {
                     secure: true,
                  }
 
-                 const {accessToken,refreshToken: newRefreshToken} = generateAccessandRefreshToken(user._id)
+                 const {accessToken,refreshToken: newRefreshToken} = await generateAccessandRefreshToken(user._id)
 
                  //user.refreshToken = newRefreshToken
                  //user.save({validateBeforeSave: false})
@@ -308,7 +306,7 @@ const refreshAccessToken = asynchandler(async (req,res)=> {
 
           }
           catch(error){
-                 throw new apiError("Invalid refresh token")
+                 throw new apiError(401,"Invalid refresh token")
           }
 
           
@@ -321,11 +319,11 @@ const forgotPasswordRequest = asynchandler(async (req,res) => {
            const user = await User.findOne({email});
 
            if(!user){
-              throw new apiError(404,"user doesnot exist")
+              throw new apiError(404,"User does not exist")
 
            }
 
-           const {unHashedToken,hashedToken,tokenExpiry} = generateTemporaryToken();
+           const {unHashedToken,hashedToken,tokenExpiry} = user.generateTemporaryToken();
 
            user.forgotPasswordToken = hashedToken;
            user.forgotPasswordExpiry = tokenExpiry;
@@ -372,7 +370,7 @@ const resetForgotPassword = asynchandler(async (req,res)=>{
         })
 
         if(!user){
-            throw new apiError(489,"Token invalid or Expired")
+            throw new apiError(400,"Token invalid or expired")
         }
 
         user.forgotPasswordToken = undefined
@@ -380,8 +378,7 @@ const resetForgotPassword = asynchandler(async (req,res)=>{
 
 
         user.password = newPassword
-        user.save({validateBeforeSave: false})
-         
+        await user.save({validateBeforeSave: false})
         return res
                .status(200)
                .json(new apiResponse(
@@ -397,7 +394,11 @@ const resetForgotPassword = asynchandler(async (req,res)=>{
 const changeCurrentPassword = asynchandler(async (req,res)=> {
          const {oldPassword,newPassword} = req.body;
 
-         const user = User.findById(req.user?._id)
+         const user = await User.findById(req.user?._id)
+
+         if(!user){
+             throw new apiError(404,"User not found")
+         }
 
          const isPasswordValid = await user.isPasswordCorrect(oldPassword)
 
@@ -406,7 +407,7 @@ const changeCurrentPassword = asynchandler(async (req,res)=> {
          }
 
          user.password = newPassword;
-         user.save({validateBeforeSave: false})
+         await user.save({validateBeforeSave: false})
 
          return res
                 .status(200)

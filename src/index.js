@@ -10,17 +10,15 @@ dotenv.config({path:"./.env"})//opening door
 const port = process.env.PORT;
 
 connectDB()
-.then(
-        app.listen(port,()=>{
-        console.log(`your application http://localhost:${port} is running successfully`)
-})
-)
-.catch((err)=>{
-         console.error("😒MangoDB connection failed",err);
-         process.exit(1);
-}
-      
-)
+  .then(() => {
+    app.listen(port, () => {
+      console.log(`your application http://localhost:${port} is running successfully`);
+    });
+  })
+  .catch((err) => {
+    console.error("😒MongoDB connection failed", err);
+    process.exit(1);
+  });
 
 
 
