@@ -14,7 +14,7 @@ app.use(
     })
 );
 
-app.options("*", cors());
+
 
 // --- BASIC CONFIGURATIONS (Middleware) ---
 // 1. Parse JSON data (e.g., from Postman or Thunder Client)
