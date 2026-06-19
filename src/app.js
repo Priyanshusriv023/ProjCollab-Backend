@@ -5,6 +5,16 @@ import { apiError } from "./utils/api-Error.js";
 
 const app = express();
 
+app.use(
+    cors({
+        origin: process.env.CORS_ORIGIN?.split(",") || "http://localhost:5173",
+        credentials: true,
+        methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+        allowedHeaders: ["Content-Type", "Authorization"],
+    })
+);
+
+app.options("*", cors());
 
 // --- BASIC CONFIGURATIONS (Middleware) ---
 // 1. Parse JSON data (e.g., from Postman or Thunder Client)
@@ -19,14 +29,6 @@ app.use(express.static("public"));
 app.use(cookieParser())
 
 
-app.use(
-    cors({
-        origin: process.env.CORS_ORIGIN?.split(",") || "http://localhost:5173",
-        credentials: true,
-        methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-        allowedHeaders: ["Content-Type", "Authorization"],
-    })
-);
 
 
 //import healthcheck route
