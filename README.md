@@ -68,6 +68,10 @@ cp .env.example .env
 npm run dev
 
 ## Environment Variables
+
+Create a `.env` file in the root directory:
+
+```env
 PORT=8000
 CORS_ORIGIN=
 MONGO_URI=
@@ -81,6 +85,7 @@ MAILTRAP_SMTP_USER=
 MAILTRAP_SMTP_PASS=
 FORGOT_PASSWORD_REDIRECT_URL=
 SERVER_URL=
+```
 
 ## Frontend Repo
 [ProjCollab Frontend](https://github.com/Priyanshusriv023/ProjCollab-Frontend)
